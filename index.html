@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Check University Result</title>
+</head>
+<body>
+	<h1>Check University Result</h1>
+	<form id="result-form">
+		<label for="seatno">Seat No:</label>
+		<input type="text" id="seatno" name="SeatNo" required>
+		<br>
+		<label for="mothername">Mother Name:</label>
+		<input type="text" id="mothername" name="MotherName" required>
+		<br>
+		<button type="submit">Check Result</button>
+	</form>
+	<div id="result"></div>
+	<script>
+		document.getElementById('result-form').addEventListener('submit', function(event) {
+			event.preventDefault();
+
+			var myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+			var urlencoded = new URLSearchParams();
+			urlencoded.append("PatternID", "m1BNQI1K4Neq+T7ZlFSbDA==");
+			urlencoded.append("PatternName", "yahYElezAOBYysbVmdmCzA3h9BFH3AFoZW5nlqcje+IBTVmilw7Rpm37mw6fPg20");
+			urlencoded.append("SeatNo", document.getElementById('seatno').value);
+			urlencoded.append("MotherName", document.getElementById('mothername').value);
+			urlencoded.append("submit", "Check Result");
+
+			var requestOptions = {
+			  method: 'POST',
+			  headers: myHeaders,
+			  body: urlencoded,
+			  redirect: 'follow'
+			};
+
+			fetch("https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult", requestOptions)
+			  .then(response => response.text())
+			  .then(result => document.getElementById('result').innerHTML = result)
+			  .catch(error => console.log('error', error));
+		});
+	</script>
+</body>
+</html>
