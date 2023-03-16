@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Result Checker</title>
+</head>
+<body>
+	<h1>Check Your Result</h1>
+	<form id="resultForm">
+		<label for="seatNo">Seat No:</label>
+		<input type="text" id="seatNo" name="seatNo"><br><br>
+		<label for="motherName">Mother's Name:</label>
+		<input type="text" id="motherName" name="motherName"><br><br>
+		<input type="submit" value="Check Result">
+	</form>
+	<br>
+	<div id="result"></div>
+
+	<script>
+		// When the form is submitted
+		document.getElementById("resultForm").addEventListener("submit", function(event) {
+			event.preventDefault(); // Prevent the form from submitting normally
+
+			// Get the form data
+			var seatNo = document.getElementById("seatNo").value;
+			var motherName = document.getElementById("motherName").value;
+
+			// Create the request body
+			var myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+			var urlencoded = new URLSearchParams();
+			urlencoded.append("PatternID", "m1BNQI1K4Neq+T7ZlFSbDA==");
+			urlencoded.append("PatternName", "yahYElezAOBYysbVmdmCzA3h9BFH3AFoZW5nlqcje+IBTVmilw7Rpm37mw6fPg20");
+			urlencoded.append("SeatNo", seatNo);
+			urlencoded.append("MotherName", motherName);
+			urlencoded.append("submit", "Check Result");
+
+			// Create the request options
+			var requestOptions = {
+			  method: 'POST',
+			  headers: myHeaders,
+			  body: urlencoded,
+			  redirect: 'follow'
+			};
+
+			// Make the request
+			fetch("https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult", requestOptions)
+			  .then(response => response.blob()) // Get the response as a blob
+			  .then(result => {
+			  	// Create a URL for the blob
+			  	var url = URL.createObjectURL(result);
+
+			  	// Open the URL in a new tab
+			  	window.open(url, '_blank');
+			  })
+			  .catch(error => console.log('error', error));
+
+			  // Clear the form inputs
+			  document.getElementById("seatNo").value = "";
+			  document.getElementById("motherName").value = "";
+		});
+	</script>
+</body>
+</html>
