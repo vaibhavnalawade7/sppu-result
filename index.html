@@ -1,46 +1,104 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Check University Result</title>
+  <title>Check Result</title>
+  <style>
+    /* Add some styles to make the form look good */
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+
+    label {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type=text] {
+      width: 300px;
+      height: 30px;
+      margin-bottom: 20px;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    input[type=submit] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    input[type=submit]:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 50px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-	<h1>Check University Result</h1>
-	<form id="result-form">
-		<label for="seatno">Seat No:</label>
-		<input type="text" id="seatno" name="SeatNo" required>
-		<br>
-		<label for="mothername">Mother Name:</label>
-		<input type="text" id="mothername" name="MotherName" required>
-		<br>
-		<button type="submit">Check Result</button>
-	</form>
-	<div id="result"></div>
-	<script>
-		document.getElementById('result-form').addEventListener('submit', function(event) {
-			event.preventDefault();
+<center>
+  <form id="form">
+    <label for="seatNo">Seat No:</label>
+    <input type="text" id="seatNo" name="seatNo">
 
-			var myHeaders = new Headers();
-			myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    <label for="motherName">Mother's Name:</label>
+    <input type="text" id="motherName" name="motherName">
 
-			var urlencoded = new URLSearchParams();
-			urlencoded.append("PatternID", "m1BNQI1K4Neq+T7ZlFSbDA==");
-			urlencoded.append("PatternName", "yahYElezAOBYysbVmdmCzA3h9BFH3AFoZW5nlqcje+IBTVmilw7Rpm37mw6fPg20");
-			urlencoded.append("SeatNo", document.getElementById('seatno').value);
-			urlencoded.append("MotherName", document.getElementById('mothername').value);
-			urlencoded.append("submit", "Check Result");
+    <input type="submit" value="Check Result">
+  </form>
 
-			var requestOptions = {
-			  method: 'POST',
-			  headers: myHeaders,
-			  body: urlencoded,
-			  redirect: 'follow'
-			};
+  <div id="result"></div>
 
-			fetch("https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult", requestOptions)
-			  .then(response => response.text())
-			  .then(result => document.getElementById('result').innerHTML = result)
-			  .catch(error => console.log('error', error));
-		});
-	</script>
+  <script>
+    const form = document.querySelector('#form');
+    const resultDiv = document.querySelector('#result');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      const seatNo = document.querySelector('#seatNo').value;
+      const motherName = document.querySelector('#motherName').value;
+      
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      const urlencoded = new URLSearchParams();
+      urlencoded.append("PatternID", "m1BNQI1K4Neq+T7ZlFSbDA==");
+      urlencoded.append("PatternName", "yahYElezAOBYysbVmdmCzA3h9BFH3AFoZW5nlqcje+IBTVmilw7Rpm37mw6fPg20");
+      urlencoded.append("SeatNo", seatNo);
+      urlencoded.append("MotherName", motherName);
+      urlencoded.append("submit", "Check Result");
+
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+      };
+
+      try {
+        const response = await fetch("https://onlineresults.unipune.ac.in/Result/Dashboard/ViewResult", requestOptions);
+        const pdfBlob = await response.blob();
+        const url = URL.createObjectURL(pdfBlob);
+
+        resultDiv.innerHTML = `<iframe src="${url}" width="100%" height="500px"></iframe>`;
+        resultDiv.style.display = 'block';
+      } catch (error) {
+        console.log('error', error);
+        resultDiv.innerHTML = 'Error occurred while fetching the result. Please try again later.';
+        resultDiv.style.display = 'block';
+      }
+    });
+  </script>
+</center>
 </body>
 </html>
